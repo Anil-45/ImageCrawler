@@ -27,7 +27,7 @@ def crawl(args: argparse):
     with tqdm(obj_to_search, desc="Extracting URLs", colour="green") as progress_bar:
         for obj in progress_bar:
             img_links = extract_urls(
-                web_driver=web_driver, obj=obj, max_urls=int(args.max_count)
+                web_driver=web_driver, obj=obj, max_urls=args.max_count
             )
             links_dict[obj] = img_links
         LOG.info("URL extract complete.")
@@ -36,7 +36,7 @@ def crawl(args: argparse):
 
     for item in links_dict.items():
         download_images(
-            item[1][: int(args.max_count)], obj_to_search=item[0], out_dir=args.out_dir
+            item[1][: args.max_count], obj_to_search=item[0], out_dir=args.out_dir
         )
 
     LOG.info("Downloading complete.")
@@ -60,6 +60,7 @@ def main():
     parser.add_argument(
         "--max_count",
         default=DEFAULT_IMG_COUNT,
+        type=int,
         help=f"Maximum number of images to download, defaults to {DEFAULT_IMG_COUNT}",
     )
 
