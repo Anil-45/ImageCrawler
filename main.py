@@ -19,14 +19,16 @@ def crawl(args: argparse):
     LOG.info("Scraping for: %s", obj_to_search)
     LOG.info("Output Dir: %s", args.out_dir)
     LOG.info("Headless: %r", args.headless)
-    LOG.info("Max number of images to download: %d \n", args.max_count)
+    LOG.info("Max number of images to download: %s \n", args.max_count)
 
     LOG.info("Started extracting URLs")
     web_driver = get_driver(args.headless)
     links_dict = dict()
     with tqdm(obj_to_search, desc="Extracting URLs", colour="green") as progress_bar:
         for obj in progress_bar:
-            img_links = extract_urls(web_driver=web_driver, obj=obj, max_urls=args.max_count)
+            img_links = extract_urls(
+                web_driver=web_driver, obj=obj, max_urls=int(args.max_count)
+            )
             links_dict[obj] = img_links
         LOG.info("URL extract complete.")
 
@@ -34,7 +36,7 @@ def crawl(args: argparse):
 
     for item in links_dict.items():
         download_images(
-            item[1][: args.max_count], obj_to_search=item[0], out_dir=args.out_dir
+            item[1][: int(args.max_count)], obj_to_search=item[0], out_dir=args.out_dir
         )
 
     LOG.info("Downloading complete.")
